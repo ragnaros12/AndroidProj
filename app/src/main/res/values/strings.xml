@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">First</string>
+    <string name="button2">Tags</string>
+    <string name="button1">Dates</string>
+</resources>
