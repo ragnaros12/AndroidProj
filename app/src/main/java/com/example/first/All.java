@@ -11,8 +11,4 @@ public class All {
         }
         return notes;
     }
-
-    public static void setNotes(ArrayList<Note> notes) {
-        All.notes = notes;
-    }
 }

@@ -2,74 +2,128 @@ package com.example.first;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.recyclerview.selection.ItemKeyProvider;
+import androidx.recyclerview.selection.SelectionPredicates;
+import androidx.recyclerview.selection.SelectionTracker;
+import androidx.recyclerview.selection.StableIdKeyProvider;
+import androidx.recyclerview.selection.StorageStrategy;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import software.rsquared.textdecorator.Text;
 
 public class MainActivity extends AppCompatActivity {
 
+    NoteAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setInitData();
-
-        Context context = this;
-
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-
-        NoteAdapter.OnStateClickListener stateClickListener = new NoteAdapter.OnStateClickListener() {
+        adapter = new NoteAdapter(this, new NoteAdapter.ClickedChanged() {
             @Override
-            public void onStateClick(Note note, int position) {
-                Toast.makeText(getApplicationContext(), "Был выбран пункт " + note.getHeader(), Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        NoteAdapter adapter = new NoteAdapter(this, stateClickListener);
-
-        ItemTouchHelper helper = new ItemTouchHelper(new Call() {
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                new AlertDialog.Builder(context).setTitle("удалить?").setMessage("вы действительно хотите удалить").
-                        setPositiveButton("да", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                All.getNotes().remove(viewHolder.getAdapterPosition());
-                                adapter.RemoveClicked(All.getNotes().get(viewHolder.getAdapterPosition()));
-                                adapter.notifyDataSetChanged();
-                            }
-                        }).setNegativeButton("нет", (d,i) -> {adapter.notifyDataSetChanged();}).show();
+            public void Changed() {
+                invalidateOptionsMenu();
             }
         });
-
+        adapter.setHasStableIds(true);
+        ItemTouchHelper helper = new ItemTouchHelper(new Call(this, adapter));
         helper.attachToRecyclerView(recyclerView);
-
         recyclerView.setAdapter(adapter);
-
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(adapter.getClicked().size() != 0) {
+            menu.clear();
+            getMenuInflater().inflate(R.menu.menu, menu);
+            menu.findItem(R.id.Count).setTitle(adapter.getClicked().size() + "");
+            menu.findItem(R.id.Clear).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    onBackPressed();
+                    return true;
+                }
+            });
+            menu.findItem(R.id.Delete).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    new AlertDialog.Builder(MainActivity.this).setTitle("Удалить?").setMessage("вы хотите удалить?")
+                            .setPositiveButton("да", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    All.getNotes().removeAll(adapter.getClicked());
+                                    adapter.getClicked().clear();
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }).setNegativeButton("нет", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    }).create().show();
+
+                    return true;
+                }
+            });
+            return true;
+        }
+        else{
+            return super.onCreateOptionsMenu(menu);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(adapter.getClicked().size() == 0){
+            super.onBackPressed();
+        }
+        else{
+            adapter.getClicked().clear();
+            adapter.notifyDataSetChanged();
+            invalidateOptionsMenu();
+        }
+    }
+
+    public void ClickToAdd(View w){
+        Intent intent = new Intent(this, Add.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 
     private void setInitData() {
         int y, m, d;
-        for (int x = 1; x<10; ++x) {
+        for (int x = 1; x<20; ++x) {
             y = (int) (Math.random() * 30) + 1991;
             m = (int) (Math.random() * 12) + 1;
             d = (int) (Math.random() * 30) + 1;

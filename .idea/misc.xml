@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Artem/Desktop/First/app/src/main/res/drawable/selector.xml" value="0.17864583333333334" />
+        <entry key="..\:/Users/Artem/Desktop/First/app/src/main/res/layout/activity_add.xml" value="0.176" />
         <entry key="..\:/Users/Artem/Desktop/First/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
         <entry key="..\:/Users/Artem/Desktop/First/app/src/main/res/layout/recycle_row.xml" value="0.12708333333333333" />
+        <entry key="..\:/Users/Artem/Desktop/First/app/src/main/res/menu/menu.xml" value="0.12604166666666666" />
+        <entry key="..\:/Users/Artem/Desktop/First/app/src/main/res/menu/toolbar.xml" value="0.25" />
         <entry key="..\:/Users/user/Desktop/Java/First/app/src/main/res/drawable/ic_launcher_background.xml" value="0.109375" />
         <entry key="..\:/Users/user/Desktop/Java/First/app/src/main/res/drawable/liner.xml" value="0.1" />
         <entry key="..\:/Users/user/Desktop/Java/First/app/src/main/res/drawable/my_button.xml" value="0.22552083333333334" />

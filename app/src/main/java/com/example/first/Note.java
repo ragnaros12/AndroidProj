@@ -1,9 +1,13 @@
 package com.example.first;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.versionedparcelable.ParcelField;
+
 import java.util.Objects;
 
-public class Note {
-
+public class Note{
     private String FirstLine;
     private String Header;
     private String SecondLine;
@@ -17,7 +21,6 @@ public class Note {
         this.SecondLine = SecondLine;
         this.Date = Date;
         this.ResourceImage = ResourceImage;
-
     }
 
     public String getFirstLine() {
