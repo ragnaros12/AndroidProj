@@ -25,9 +25,13 @@ import java.util.Objects;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     private final LayoutInflater inflater;
+
+    // clicked - массив нажатых записей
     private final ArrayList<Note> clicked;
+    // changed - обьект для реализации колбека по конкретной itemview
     private final ClickedChanged changed;
 
+    // интерфейс для описывающий колбек
     interface ClickedChanged{
         void Changed();
     }
@@ -88,12 +92,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
         ViewHolder(@NonNull View view) {
             super(view);
-            setIsRecyclable(false);
+            //setIsRecyclable(false);
             headerView =  view.findViewById(R.id.header);
             FirstLineView =  view.findViewById(R.id.firstline);
             SecondLineView =  view.findViewById(R.id.secondline);
             dateView =  view.findViewById(R.id.date);
             ResourceImageView =  view.findViewById(R.id.imagePhoto);
+
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @SuppressLint({"ResourceAsColor", "RestrictedApi"})
                 @Override
